@@ -14,6 +14,8 @@ djangorestframework-simplejwt = "*"
 setuptools = "*"
 gunicorn = "*"
 dj-database-url = "*"
+python-decouple = "*"
+django-on-heroku = "*"
 
 [dev-packages]
 
