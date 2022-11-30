@@ -2,8 +2,9 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from .serializers import UserCreateSerializer, OrderSerializer
+from .serializers import UserCreateSerializer, OrderCreateSerializer, OrderRetrieveSerializer
 from .models import Order
+
 
 @api_view(["POST"])
 @permission_classes([AllowAny])
@@ -22,14 +23,18 @@ def pedidos(request, format=None):
             pedidos = Order.objects.filter(customer=user).order_by('-id') 
         except:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        serializer = OrderSerializer(
+        serializer = OrderRetrieveSerializer(
             pedidos, context={'request': request}, many=True)
         return Response(serializer.data)
     if request.method == "POST":
-        pedido = request.data
-        serializer = OrderSerializer(data=pedido)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        pedidos = request.data
+
+        for pedido in pedidos:
+            pedido["customer"] = request.user.id
+            serializer = OrderCreateSerializer(data=pedido)
+            if serializer.is_valid():
+                serializer.save()
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_201_CREATED)
 

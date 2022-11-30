@@ -4,7 +4,13 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from .serializers import ProductSerializer
 from .models import Product
+from rest_framework import filters, generics
 
+class ProductAPIView(generics.ListAPIView):
+    search_fields = ['name']
+    filter_backends = (filters.SearchFilter,)
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
@@ -20,11 +26,3 @@ def product(request, format=None):
     return Response(status=status.HTTP_401_UNAUTHORIZED)
 
 
-@api_view(["GET"])
-def products(request, format=None):
-    try:
-        pedidos = Product.objects.all()
-    except:
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    serializer = ProductSerializer(pedidos, context={"request": request}, many=True)
-    return Response(serializer.data)

@@ -17,6 +17,11 @@ class Order(models.Model):
     product = models.ForeignKey(Product, on_delete=CASCADE)
     quantity = models.IntegerField()
 
+    def save(self, *args, **kwargs):
+        print("aqui")
+        self.total_price = self.product.price * self.quantity
+        super(Order, self).save(*args, **kwargs)
+
     def __str__(self) -> str:
         return f"Pedido nº {self.id} do cliente {self.customer.user.username}"
 

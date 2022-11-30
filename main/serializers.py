@@ -22,10 +22,16 @@ class UserCreateSerializer(serializers.ModelSerializer):
         user.save()
         return user
 
-class OrderSerializer(serializers.ModelSerializer):
+class OrderCreateSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Order
-        fields = "__all__"
+        fields = ("customer", "product", "quantity")
+        
+class OrderRetrieveSerializer(serializers.ModelSerializer):
 
-
+    class Meta:
+        model = Order
+        exclude = ["customer"]
+        depth = 1
 
