@@ -174,7 +174,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 env = environ.Env()
-FILE_UPLOAD_STORAGE = env("FILE_UPLOAD_STORAGE", default="local")  # local | s3
+FILE_UPLOAD_STORAGE = os.environ['FILE_UPLOAD_STORAGE']  # local | s3
 
 if FILE_UPLOAD_STORAGE == "local":
     MEDIA_URL = '/media/'
