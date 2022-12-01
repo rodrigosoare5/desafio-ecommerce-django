@@ -14,11 +14,12 @@ import dj_database_url
 import django_on_heroku
 import os
 import environ
+env = environ.Env()
+environ.Env.read_env()
 
 from pathlib import Path
 
 from datetime import timedelta
-env = environ.Env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -88,8 +89,12 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3', 
-        'NAME': 'sqlite3.db',                     
+        'ENGINE': 'django.db.backends.postgresql_psycopg2', 
+        'NAME': env('DB_NAME'), 
+        'USER': env('DB_USER'),
+        'PASSWORD': env('DB_PASSWORD'),
+        'HOST': 'localhost',
+        'PORT': '5432'                    
     }
 }
 db_from_env = dj_database_url.config(conn_max_age=600)
